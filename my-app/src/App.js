@@ -1,25 +1,26 @@
 import { useState } from "react";
+import Counter from "./components/Counter";
+import ClassCounter from "./components/ClassCounter";
 
-function App(){
-	let [likes , setLikes] = useState(0)
+function App() {
+  let [value, setValue] = useState("str");
 
-
-	function inc(){
-		setLikes(++likes)
-		console.log(likes)
-	}
-	
-	function dec(){
-		setLikes(--likes)
-		console.log(likes)
-	}
-	return (
-		<div className="app">
-			<h1>{likes}</h1>
-			<button onClick={inc}>Inc</button>
-			<button onClick={dec}>Dec</button>
-		</div>
-	)
+  return (
+    <div className="app">
+      <h1>{value}</h1>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}></input>
+      <Counter></Counter>
+      <Counter></Counter>
+      <Counter></Counter>
+      <Counter></Counter>
+      <ClassCounter></ClassCounter>
+    </div>
+  );
 }
 
 export default App;
