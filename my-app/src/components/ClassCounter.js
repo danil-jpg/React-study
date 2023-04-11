@@ -20,7 +20,7 @@ class ClassCounter extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="counter-func">
         <h1>{this.state.count}</h1>
         <button onClick={this.inc}>Inc</button>
         <button onClick={this.dec}>Dec</button>

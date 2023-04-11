@@ -14,7 +14,7 @@ const Counter = () => {
   }
 
   return (
-    <div>
+    <div className="counter-func">
       <h1>{count}</h1>
       <button onClick={inc}>Inc</button>
       <button onClick={dec}>Dec</button>
