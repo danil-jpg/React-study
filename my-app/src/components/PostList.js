@@ -1,13 +1,13 @@
 import React from "react";
-import CssTest from "./CssTest";
+import ArticleTemplate from "./ArticleTemplate";
 
-const PostList = ({ articles }) => {
+const PostList = ({ articles, deletePost }) => {
   return (
     <div>
       <h1 style={{ textAlign: "center" }}>Список постов</h1>
-      {articles.map((elem) => {
-        return <CssTest obj={elem} key={elem.title}></CssTest>;
-      })}
+      {articles.map((elem, index) => (
+        <ArticleTemplate number={index + 1} deletePost={deletePost} obj={elem} key={elem.id}></ArticleTemplate>
+      ))}
     </div>
   );
 };
