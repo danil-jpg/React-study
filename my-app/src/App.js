@@ -2,54 +2,49 @@ import { useState, useMemo } from "react";
 import PostList from "./components/PostList";
 import "./styles/App.css";
 import PostForm from "./components/PostForm";
-import MySelect from "./components/UI/select/MySelect";
-import MyInput from "./components/UI/input/MyInput";
+import PostFilter from "./components/PostFilter";
+import MyModal from "./components/UI/modal/MyModal";
+import MyButton from "./components/UI/button/MyButton";
+import { usePosts } from "./components/hooks/usePost";
+import axios from "axios";
 
 function App() {
-  const [articles, setArticles] = useState([
-    { id: 2, title: "ббб", descr: "ббб" },
-    { id: 1, title: "ааа", descr: "ааа" },
-    { id: 3, title: "ссс", descr: "ссс" },
-  ]);
+  const [articles, setArticles] = useState([]);
 
-  const [selectedSort, setSelectedSort] = useState("");
+  const [filter, setFilter] = useState({ sort: "", query: "" });
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [modal, setModal] = useState(false);
 
-  const sortedPosts = useMemo(() => {
-    console.log("some");
-    if (selectedSort) {
-      return [...articles].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]));
-    }
-    return articles;
-  }, [articles, selectedSort]);
+  const sortedAndSearchedPosts = usePosts(articles, filter.sort, filter.query);
 
   const createPost = (newArticle) => {
     setArticles([...articles, newArticle]);
+    setModal(false);
   };
 
   const deletePost = (article) => {
     setArticles([...articles.filter((ar) => ar.id !== article.id)]);
   };
 
-  const sortPosts = (sort) => {
-    setSelectedSort(sort);
-  };
+  async function fetchPosts() {
+    const response = await axios.get("https://jsonplaceholder.typicode.com/posts");
+    let responseCopy = [...response.data].splice(0, 10);
+
+    setArticles(responseCopy);
+  }
 
   return (
     <div className="app">
-      <PostForm create={createPost}></PostForm>
+      <MyButton onClick={fetchPosts}>FetchSome</MyButton>
+      <MyButton onClick={() => setModal(true)} style={{ padding: "5px ", background: "transparent" }}>
+        Показать модальное окно
+      </MyButton>
+      <MyModal visible={modal} setVisible={setModal}>
+        <PostForm create={createPost}></PostForm>
+      </MyModal>
       <hr style={{ margin: "25px 0" }} />
-      <MyInput placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}></MyInput>
-      <MySelect
-        value={selectedSort}
-        onChange={sortPosts}
-        defaultValue={"Сортировка"}
-        option={[
-          { value: "title", name: "По названию", id: "1" },
-          { value: "descr", name: "По описанию", id: "2" },
-        ]}></MySelect>
-      {articles.length !== 0 ? <PostList articles={sortedPosts} deletePost={deletePost}></PostList> : <h2 style={{ textAlign: "center", marginTop: "25px" }}>Cannot found!</h2>}
+      <PostFilter filter={filter} setFilter={setFilter}></PostFilter>
+      <PostList articles={sortedAndSearchedPosts} deletePost={deletePost}></PostList>
     </div>
   );
 }
